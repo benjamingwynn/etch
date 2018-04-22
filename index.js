@@ -198,6 +198,26 @@ const api = {
 	},
 
 	fs: {
+		async rm (request) {
+			const path = getPath(request.payload.path)
+			const pathSplit = path.split("/")
+
+			if (pathSplit[pathSplit.length - 1] === ".tmux-socket") {
+				console.log("Avoiding deletion of tmux socket, for now")
+				console.log("doesTmuxSocketHaveSession", doesTmuxSocketHaveSession(path))
+				
+				if (doesTmuxSocketHaveSession) {
+					// TODO: detach sessions
+				}
+
+				return boom.notImplemented()
+			}
+
+			await fs.remove(path)
+
+			return {}
+		},
+
 		async get (request) {
 			const path = getPath(request.payload.path)
 
@@ -319,12 +339,12 @@ server.route({
 	}
 })
 
-/** serve the root index */
+/** serve the explorer */
 server.route({
 	method: "GET",
-	path: "/root/{file*}",
+	path: "/explorer/{file*}",
 	handler (request, h) {
-		return h.file("root/" + request.params.file)
+		return h.file("explorer/" + request.params.file)
 	}
 })
 
@@ -332,7 +352,7 @@ server.route({
 	method: "GET",
 	path: "/",
 	handler (request, h) {
-		return h.file("root/index.html")
+		return h.file("explorer/index.html")
 	}
 })
 
