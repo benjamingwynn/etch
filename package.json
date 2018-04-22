@@ -1,0 +1,26 @@
+{
+  "name": "etch-ide",
+  "version": "1.0.0",
+  "description": "Yet another cloud IDE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "yarn --dev && cd root/ && yarn --dev && cd ../editor/ && yarn --dev",
+    "build": "cd root/ && webpack && cd ../editor/ && webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "boom": "^7.2.0",
+    "fs-extra": "^5.0.0",
+    "hapi": "^17.3.1",
+    "http": "^0.0.0",
+    "http-proxy": "^1.17.0",
+    "inert": "^5.1.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.14",
+    "yarn": "^1.6.0"
+  }
+}

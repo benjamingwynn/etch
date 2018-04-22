@@ -1,0 +1,5 @@
+.tmux-socket
+**/dist/*.js
+workspace/
+node_modules/
+**/node_modules/

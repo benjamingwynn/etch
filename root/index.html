@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en-GB">
+	<head>
+		<title>Yawde</title>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+		<style>
+			html, body {
+				font-family: -apple-system, system-ui, sans-serif;
+				overflow: hidden;
+				margin: 0;
+			}
+
+			body {
+				transition: opacity 0.3s;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			*[hidden] {
+				display: none;
+			}
+
+			.tree {
+				display: flex;
+				flex-flow: column nowrap;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: white;
+				box-shadow: 0 0 4em rgba(0,0,0,0.5);
+				padding: 0em 1em 1em 1em;
+			}
+
+			.tree--forwards {
+				animation: 0.3s treeIn;
+			}
+			@keyframes treeIn {
+				from {
+					transform: translateX(50%);
+					opacity: 0;
+				}
+
+				to {}
+			}
+
+			.tree--backwards {
+				animation:  0.3s treeInBack;
+			}
+
+			@keyframes treeInBack {
+				from {
+					transform: translateX(-50%);
+					opacity: 0;
+				}
+
+				to {}
+			}
+
+			.tree__path {
+				margin: 0.5em 0;
+				font-size: 1.5em;
+				font-weight: normal;
+				opacity: 0.3;
+				transition: all 0.15s;
+				display: flex;
+				flex-flow: row nowrap;
+				overflow-x: auto;
+				flex: auto 0 0;
+			}
+
+			.tree__path:hover {
+				opacity: 0.6;
+			}
+
+			.tree__path__button {
+				background: transparent;
+				border-radius: 0;
+				border: solid thin silver;
+				padding: 0.4em 2em;
+				margin-right: 0.3em;
+			}
+
+			.tree__item {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: center;
+				appearance: none;
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				border: none;
+				color: black;
+				opacity: 0.7;
+				text-decoration: none;
+				text-align: left;
+				cursor: pointer;
+				font-size: 1em;
+				padding: 0.4em 0.25em;
+				font-weight: normal;
+				transition: all 0.15s;
+				outline: none !important;
+				flex: auto 0 0;
+				background: none;
+    			box-sizing: border-box;
+			}
+
+			.tree__item__name {
+				flex: 100% 1 1;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+				width: auto;
+				padding-right: 0.5em;
+			}
+
+			.tree__item:hover {
+				opacity: 0.9;
+			}
+
+			.tree__item:focus {
+				box-shadow: 0 0 1em rgba(0,0,0,0.4);
+				border-bottom-color: transparent;
+			}
+
+			.tree__item:focus + .tree__item {
+				border-top-color: transparent;
+			}
+
+			.tree__item::before {
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				font-size: 0.7em;
+				width: 1.5rem;
+				height: 1.5rem;
+				margin-right: 1rem;
+				flex: auto 0 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 50%;
+			}
+
+			.tree__dir::before {
+				content: "";
+				background: hsl(40, 45%, 45%);
+				color: hsl(40, 84%, 18%);
+			}
+
+			.tree__file::before {
+				content: "";
+				background: hsl(190, 45%, 45%);
+				color: hsl(190, 84%, 18%);
+			}
+
+			.tree__special::before {
+				content: "";
+				background: hsl(90, 45%, 45%);
+				color: hsl(90, 84%, 18%);
+			}
+
+			.tree__item::after {
+				margin-left: auto;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				margin-left: 1em;
+			}
+
+			.tree__dir::after {
+				content: "";
+			}
+
+			.tree__file::after {
+				content: "";
+			}
+
+			.tree__special::after {
+				content: "";
+			}
+
+			.tree__item__mod {
+				flex: auto 1 0;
+			}
+
+			body[data-view="list"] .tree__files {
+				flex-flow: column nowrap;
+				flex: auto 1 1;
+			}
+
+			body[data-view="grid"] .tree__options {
+				margin-top: auto;
+			}
+
+			body[data-view="grid"] .tree__item {
+				flex: 20em 0 0;
+				padding: 0.5em 1em;
+			}
+
+			body[data-view="list"] .tree__item + .tree__item {
+				border-top: solid thin rgba(0,0,0,0.1);
+			}
+
+			body[data-view="grid"] .tree__files {
+				flex-flow: row wrap;
+			}
+
+			/** Tiny layout */
+
+			body[data-view="tiny"] .tree__files {
+				flex-flow: row wrap;
+				flex: auto 0 0;
+			}
+
+			body[data-view="tiny"] .tree__item {
+				padding: 0.1em;
+				width: 10em;
+			}
+
+			body[data-view="tiny"] .tree__item__mod {
+				display: none;
+			}
+
+			body[data-view="tiny"] .tree__item::after {
+				content: none;
+			}
+
+			body[data-view="tiny"] .tree__item::before {
+				content: "";
+				width: 0.5em;
+				height: 0.5em;
+				margin-right: 0.1em;
+			}
+
+			body[data-view="tiny"] .tree__options {
+				margin-top: auto;
+			}
+
+
+			.tree__files {
+				display: flex;
+				overflow: auto;
+			}
+
+			.tree__options {
+				display: flex;
+				flex: auto 0 0;
+				padding-top: 0.5em;
+				user-select: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+			}
+
+			.dummy {
+				display: none;
+				z-index: 1;
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				cursor: progress;
+				transition: all 0.3s;
+				background: rgba(255,255,255,0.5);
+				opacity: 0;
+			}
+
+			body.load .dummy {
+				opacity: 1;
+				display: block;
+			}
+
+			#login {
+				background: whitesmoke;
+				z-index: 2;
+				position: fixed;
+			}
+
+			.tree__settings {
+				margin-left: auto;
+			}
+
+			.tree__option {
+				background: none;
+				border: solid thin silver;
+				padding: 0.6em;
+				transition: all 0.15s;
+				cursor: pointer;
+				font-weight: normal;
+			}
+
+			.setting {
+				opacity: 0.3;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+			}
+
+			.setting--active {
+				opacity: 1;
+			}
+
+			.action {
+				opacity: 0.7;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dummy"></div>
+
+		<main id="trees">
+		</main>
+
+		<template id="template-tree">
+			<div class="tree">
+				<div class="tree__path"></div>
+				<div class="tree__files"></div>
+				<div class="tree__options">
+					<div class="tree__create">
+						<button type="button" class="tree__option action action--new-file">Create new file here</button>
+						<button type="button" class="tree__option action action--terminal">Create/connect to terminal here</button>
+						<button type="button" class="tree__option action action--refresh">Refresh</button>
+					</div>
+					<div class="tree__settings">
+						<button type="button" class="tree__option setting setting--list" data-value="list" data-default="true"></button>
+						<button type="button" class="tree__option setting setting--grid" data-value="grid"></button>
+						<button type="button" class="tree__option setting setting--grid" data-value="tiny"></button>
+
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<script src="/root/dist/main.js"></script>
+	</body>
+</html>

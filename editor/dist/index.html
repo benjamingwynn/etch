@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+		<head>
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+			<title>Loading...</title>
+			<style>
+				html, body {
+					overflow: hidden;
+				}
+
+				html, body, main {
+					width: 100%;
+					height: 100%;
+				}
+
+				body {
+					margin: 0;
+					font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+					box-sizing: border-box;
+				}
+
+				main {
+					display: flex;
+					flex-flow: column nowrap;
+				}
+
+				#editor {
+					box-sizing: border-box;
+					height: 100%;
+					overflow: hidden;
+				}
+
+				#bottom {
+					border-top: solid thin #dbdbdb;
+					background: #111;
+					user-select: none;
+					-moz-user-select: none;
+					height: 1.5em;
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: center;
+					padding: 0 0.3em;
+				}
+
+				#status-text {
+					flex: 100% 1 1;
+					transition: all 0.3s;
+				}
+
+				#bottom .bottom__text {
+					color: white;
+					opacity: 0.6;
+					font-size: 0.8em;
+					display: flex;
+					align-items: center;
+				}
+
+				#lang {
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					background: none;
+					border: none;
+					text-align: center;
+				}
+
+				*[hidden] {
+					display: none;
+				}
+
+				#options {
+					display: flex;
+				}
+
+				#status-text.status-text--attention {
+					color: yellow;
+					opacity: 1;
+				}
+
+				.actions__button {
+					appearance: none;
+					-moz-appearance: none;
+					-webkit-appearance: none;
+					border: none;
+					background: none;
+					color: white;
+					opacity: 0.6;
+					font-size: 1em;
+					transition: all 0.15s;
+					padding: 0;
+				}
+
+				.actions__button {
+					margin-left: 0.25em;
+				}
+
+				.actions__button:focus {
+					opacity: 1;
+				}
+
+				.actions {
+					display: flex;
+					justify-content: center;
+				}
+			</style>
+		</head>
+
+		<!-- TODO: don't use CDN -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+	<body>
+		<main id="edit">
+			<div id="editor"></div>
+
+			<div id="bottom">
+				<div id="status-text" class="bottom__text"></div>
+
+				<div id="loading">
+					<progress></progress>
+				</div>
+
+				<div id="options">
+					<select id="lang" class="bottom__text"></select>
+				</div>
+
+				<div class="actions">
+					<button class="actions__button actions__button--save fas fa-save" type="button" title="Save" id="action-save"></button>
+				</div>
+			</div>
+		</main>
+
+		<script src="/app.bundle.js"></script>
+	</body>
+</html>
