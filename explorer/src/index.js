@@ -16,6 +16,10 @@ let lastPath
 
 /** Generate the tree, but don't set it as the current tree */
 async function generateTree (path, minimal) {
+	const timeout = setTimeout(() => {
+		document.body.classList.add("load")
+	}, 150) // add load class if this takes longer than 150ms
+
 	const $tree = document.querySelector("#template-tree").content.cloneNode(true)
 	console.log("Generating tree for", path, minimal)
 
@@ -108,6 +112,7 @@ async function generateTree (path, minimal) {
 		$b.innerHTML += generateItemHTML(subdir)
 		$b.type = "button"
 		$b.dataset.path = subdir
+		$b.dataset.type = "dir"
 		$b.addEventListener("click", async function () {
 			if (document.body.dataset.view === "tree") {
 				if (this.classList.contains("tree__dir--expanded")) {
@@ -141,6 +146,7 @@ async function generateTree (path, minimal) {
 		$a.target = "_blank"
 		$a.innerHTML += generateItemHTML(file)
 		$a.dataset.path = file
+		$a.dataset.type = "file"
 		$a.className = "tree__file tree__item"
 		$fileContainer.appendChild($a)
 	})
@@ -149,6 +155,8 @@ async function generateTree (path, minimal) {
 		const $b = document.createElement("button")
 		$b.innerHTML = generateItemHTML(file)
 		$b.type = "button"
+		$b.dataset.path = file
+		$b.dataset.type = "special"
 		$b.className = "tree__special tree__item"
 		$b.addEventListener("click", async () => {
 			// open the terminal
@@ -180,6 +188,9 @@ async function generateTree (path, minimal) {
 	$treeWrapper.appendChild($tree)
 	$treeWrapper.className = "tree-wrapper"
 
+	clearTimeout(timeout)
+	document.body.classList.remove("load")
+
 	return $treeWrapper
 }
 
@@ -191,9 +202,6 @@ async function refreshMain (supressAnimation) {
 	if (!location.hash) location.hash = "#/"
 	if (location.hash.lastIndexOf("/") !== location.hash.length - 1) location.hash += "/"
 
-	const timeout = setTimeout(() => {
-		document.body.classList.add("load")
-	}, 150) // add load class if this takes longer than 150ms
 
 	const path = location.hash.replace("#", "")
 	const $tree = await generateTree(path)
@@ -220,15 +228,76 @@ async function refreshMain (supressAnimation) {
 	}
 
 	lastPath = path
-
-	document.body.classList.remove("load")
-	clearTimeout(timeout)
 }
 
-// TODO: this is quite network heavy, maybe don't do this?
-window.addEventListener("focus", () => {
-	// recreate the tree if we regain focus
-	// refreshMain(true)
+// add context menu actions
+let cursorX, cursorY
+const $menu = document.querySelector(".context-menu")
+const $shade = document.querySelector(".context-shade")
+
+function hideContextShade () {
+	document.querySelector(".context-focus").classList.remove("context-focus")
+	$shade.setAttribute("hidden", "true")
+}
+
+$shade.addEventListener("mousedown", (event) => {
+	if (event.target !== $shade) return // direct only
+	hideContextShade()
+})
+
+window.addEventListener("contextmenu", (event) => {
+	event.preventDefault()
+	
+	for (let i = 0; i < event.path.length; i += 1) {
+		const $tar = event.path[i]
+		if ($tar.classList && $tar.classList.contains("tree__item")) {
+			$shade.removeAttribute("hidden")
+			console.log($menu, cursorX, cursorY)
+			$menu.style.top = cursorY + "px"
+			$menu.style.left = cursorX + "px"
+			$menu.dataset.path = $tar.dataset.path
+			$menu.dataset.type = $tar.dataset.type
+			$menu.dataset.friendly = $tar.querySelector(".tree__item__name").innerText
+			$tar.classList.add("context-focus")
+
+			break
+		}
+	}
+})
+
+document.querySelector(".context-menu__item--remove").addEventListener("click", async () => {
+	const isSpecial = $menu.dataset.type === "special"
+	const confirmed = confirm(isSpecial ? "Removing a tmux socket will disconnect any connected terminals and kill any running processes.\n\nDestroy this tmux socket?" : `You are about to delete a file/folder from the filesystem. This action is irreversible.\n\nDelete ${$menu.dataset.friendly}?`)
+
+	if (confirmed) {
+		await api("fs", "rm", {path: $menu.dataset.path})
+		document.querySelector(".tree__item[data-path='" + $menu.dataset.path + "']").classList.add("tree__item--removed")
+	}
+
+	hideContextShade()
+})
+
+document.querySelector(".context-menu__item--rename").addEventListener("click", async () => {
+	const filename = prompt("Enter the new name for the file/folder:")
+	if (!filename) {
+		hideContextShade()
+		return
+	}
+
+	await api("fs", "rename", {path: $menu.dataset.path, filename})
+	hideContextShade()
+
+	// HACK: just refresh the main tree right now. dynamically processing the rename would be too complicated with trees
+	refreshMain()
+})
+
+document.addEventListener("mousemove", (event) => {
+	cursorX = event.clientX
+	cursorY = event.clientY
+})
+
+window.addEventListener("keyup", event => {
+	if (event.key === "Escape") hideContextShade()
 })
 
 refreshMain()

@@ -198,24 +198,39 @@ const api = {
 	},
 
 	fs: {
-		async rm (request) {
-			const path = getPath(request.payload.path)
-			const pathSplit = path.split("/")
+		rm (request) {
+			return new Promise (async (resolve, reject) => {
+				const path = getPath(request.payload.path)
+				const pathSplit = path.split("/")
 
-			if (pathSplit[pathSplit.length - 1] === ".tmux-socket") {
-				console.log("Avoiding deletion of tmux socket, for now")
-				console.log("doesTmuxSocketHaveSession", doesTmuxSocketHaveSession(path))
-				
-				if (doesTmuxSocketHaveSession) {
-					// TODO: detach sessions
+				if (pathSplit[pathSplit.length - 1] === ".tmux-socket") {
+					if (await doesTmuxSocketHaveSession(path)) {
+						// Kill the server
+						childProc.exec(`tmux -S ${path} kill-server`, null, async (error, stdin, stdout) => {
+							if (error) {
+								reject(error)
+							} else {
+								await fs.remove(path)
+								resolve({})
+							}
+						})
+					}
+
+					return
 				}
 
-				return boom.notImplemented()
-			}
+				await fs.remove(path)
 
-			await fs.remove(path)
+				resolve({})
+			})
+		},
 
-			return {}
+		async rename (request) {
+			const path = getPath(request.payload.path)
+			const destination = path.split("/").map((x, i) => i === path.split("/").length - 1 ? request.payload.filename : x).join("/")
+			console.log("moving", path, destination)
+			await fs.move(path, destination)
+			return {destination}
 		},
 
 		async get (request) {

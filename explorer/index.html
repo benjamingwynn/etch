@@ -41,7 +41,12 @@
 				right: 0;
 				box-shadow: 0 0 4em rgba(0,0,0,0.5), inset 0em 0.5em 1em -0.9em black;
 				background: white;
-				padding: 0em 1em 1em 1em;
+				padding: 0em 0em 1em 1em;
+			}
+
+			.tree-wrapper--independant > .tree > .tree__files {
+				overflow-y: scroll;
+				padding-right: 1em;
 			}
 
 			.tree--forwards {
@@ -116,6 +121,14 @@
     			box-sizing: border-box;
 			}
 
+			.tree__item--removed {
+				font-size: 0;
+			}
+
+			.tree__item--removed + .tree__item__subtree {
+				font-size: 0;
+			}
+
 			.tree__item__name {
 				flex: 100% 1 1;
 				text-overflow: ellipsis;
@@ -129,7 +142,7 @@
 				opacity: 0.9;
 			}
 
-			.tree__item:focus {
+			.tree__item:focus, .tree__item.context-focus {
 				background-color: rgba(0,0,0,0.12);
 				/* box-shadow: 0 0 1em rgba(0,0,0,0.4); */
 				border-bottom-color: transparent;
@@ -142,10 +155,10 @@
 			.tree__item::before {
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
-				font-size: 0.7em;
-				width: 1.5rem;
-				height: 1.5rem;
-				margin-right: 1rem;
+				font-size: 0.8em;
+				width: 2em;
+				height: 2em;
+				margin-right: 1em;
 				flex: auto 0 0;
 				display: flex;
 				justify-content: center;
@@ -325,6 +338,9 @@
 				justify-content: center;
 				width: 2em;
 				overflow: visible;
+				margin-right: 0.5em;
+				margin-left: 1em;
+				font-size: 0.4em;
 			}
 
 			body[data-view="tree"] .tree-wrapper--independant > .tree {
@@ -337,7 +353,7 @@
 			}
 
 			body[data-view="tree"] .tree__file .tree__item__name, body[data-view="tree"] .tree__special .tree__item__name {
-				margin-left: 2em;
+				margin-left: 1.5em;
 			}
 
 			body[data-view="tree"] .tree__item__expander {
@@ -369,9 +385,88 @@
 			.tree-wrapper--inline {
 				margin-left: 1.5em;
 			}
+
+			/* context menu */
+			.context-shade {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				height: 100%;
+				width: 100%;
+				z-index: 1;
+				background-color: rgba(255,255,255,0.1);
+			}
+
+			.context-menu {
+				display: block;
+				position: fixed;
+				background: white;
+				min-width: 12em;
+				box-shadow: 0.2em 0.2em 2em 0em rgba(0, 0, 0, 0.3);
+				z-index: 1;
+				border-radius: 0.3em;
+				user-select: none;
+			}
+
+			.context-menu__item {
+				display: block;
+				background: none;
+				opacity: 0.6;
+				color: black;
+				border: none;
+				/* transition: all 0.15s; */
+				width: 100%;
+				outline: none;
+				text-align: left;
+				padding: 0.5em 1em;
+				margin: 0.15em 0;
+			}
+
+			.context-menu__item:hover {
+				opacity: 0.9;
+				background-color: rgba(0,0,0,0.07);
+			}
+
+			.context-menu__item:focus {
+				opacity: 0.9;
+				background-color: rgba(0,0,0,0.15);
+			}
+
+			.context-menu__item::before {
+				margin-right: 0.9em;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				width: 1em;
+				text-align: center;
+				display: inline-block;
+			}
+
+			.context-menu__item--rename::before {
+				content: "";
+			}
+
+			.context-menu__item--remove::before {
+				content: "";
+			}
+
+			/* Disable context menu items */
+			.context-menu[data-friendly=".tmux-socket"] .context-menu__item--rename {
+				touch-action: none;
+				pointer-events: none;
+				opacity: 0.1;
+			}
 		</style>
 	</head>
 	<body>
+		<div class="context-shade" hidden>
+			<div class="context-menu">
+				<button class="context-menu__item context-menu__item--rename" type="button">Rename</button>
+				<button class="context-menu__item context-menu__item--remove" type="button">Remove</button>
+			</div>
+		</div>
+
 		<div class="dummy"></div>
 
 		<main id="trees">
