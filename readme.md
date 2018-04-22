@@ -45,8 +45,8 @@ Terminal tabs created by Etch are not bookmarkable as their URL changes over tim
 ### Installation
 
 1. Clone this git repo `git clone https://github.com/benjamingwynn/etch.git && cd etch`
-2. Install [tmux](https://en.wikipedia.org/wiki/Tmux) and [gotty](https://github.com/yudai/gotty) via your system package manager. This is required for browser terminal support. You'll also need to install [node.js](https://nodejs.org).
-3. Install local dependancies with npm: `npm run setup`
+2. Install [tmux](https://en.wikipedia.org/wiki/Tmux) via your system package manager. This is required for browser terminal support. You'll also need to install [node.js](https://nodejs.org).
+3. Run `npm run setup` - this will download GoTTY from Github and install npm deps. This only works on Linux x64 systems. Other systems will have to download the GoTTY image manually.
 4. Build etch with `npm run build`
 5. Run the etch server with node.js: `node index.js`
 
