@@ -1,7 +1,7 @@
 # Etch 
 ## Yet another cloud IDE
 
-Etch is a Javascript-based IDE inspired by Cloud9 and other similar solutions. It was created out of a need for a lightweight self-hosted web editor with Typescript support. Etch uses Microsoft's Monaco editor (the same editor that's used in VSCode) to provide support for many languages.
+Etch is a Javascript-based IDE inspired by Cloud9 and other similar solutions. It was created out of a need for a lightweight self-hosted web editor with Typescript support. Etch uses Microsoft's Monaco editor (the same editor that's used in VSCode) which provides support for many languages and performs very well.
 
 ### Features
 
@@ -14,16 +14,18 @@ Etch is a Javascript-based IDE inspired by Cloud9 and other similar solutions. I
 
 * Improve the file browser
     * Add folder creation and file/folder deletion
-    * Add file tree view
-    * Add drag/drop support for copying & moving files.
+    * Add drag/drop support for copying & moving files
+    * Add ability to disconnect clients from sockets before deleting them
+* "Changed on disk" notice in editor
 * Soft/hard tab option in the editor
+* Ability to open the editor from the terminal
 * User configuration for editor
 * Improve Typescript support with imported types
 * Use UNIX sockets instead of port numbers for Hapi and GoTTY
 * Browser icons for editor and file browser
 * Links to file browser and terminal from the editor
-* "Changed on disk" notice in editor
 * Easily installable image, such as a Docker or Snap image
+* Plugin support
 
 ### Tab-less design
 
