@@ -19,19 +19,28 @@
 			}
 
 			*[hidden] {
-				display: none;
+				display: none !important;
 			}
 
 			.tree {
 				display: flex;
 				flex-flow: column nowrap;
+				height: 100%;
+				transition: all 0.15s;
+			}
+
+			.tree-wrapper {
+				transition: all 0.15s;
+			}
+
+			.tree-wrapper--independant {
 				position: absolute;
 				top: 0;
 				bottom: 0;
 				left: 0;
 				right: 0;
+				box-shadow: 0 0 4em rgba(0,0,0,0.5), inset 0em 0.5em 1em -0.9em black;
 				background: white;
-				box-shadow: 0 0 4em rgba(0,0,0,0.5);
 				padding: 0em 1em 1em 1em;
 			}
 
@@ -121,7 +130,8 @@
 			}
 
 			.tree__item:focus {
-				box-shadow: 0 0 1em rgba(0,0,0,0.4);
+				background-color: rgba(0,0,0,0.12);
+				/* box-shadow: 0 0 1em rgba(0,0,0,0.4); */
 				border-bottom-color: transparent;
 			}
 
@@ -237,7 +247,6 @@
 				margin-top: auto;
 			}
 
-
 			.tree__files {
 				display: flex;
 				overflow: auto;
@@ -303,6 +312,63 @@
 			.action {
 				opacity: 0.7;
 			}
+
+			/* tree view */
+
+			.tree__item__expander {
+				/* hide normally */
+				max-width: 0;
+				opacity: 0;
+				transition: max-width 0.15s, opacity 0.15s;
+
+				display: flex;
+				justify-content: center;
+				width: 2em;
+				overflow: visible;
+			}
+
+			body[data-view="tree"] .tree-wrapper--independant > .tree {
+				font-size: 0.8em;
+			}
+
+			body[data-view="tree"] .tree__files {
+				flex-flow: column nowrap;
+				flex: auto 1 1;
+			}
+
+			body[data-view="tree"] .tree__file .tree__item__name, body[data-view="tree"] .tree__special .tree__item__name {
+				margin-left: 2em;
+			}
+
+			body[data-view="tree"] .tree__item__expander {
+				opacity: 0.7;
+				max-width: 2em;
+			}
+
+			.tree__dir--expanded .tree__item__expander::after {
+				transform: rotate(0deg);
+			}
+
+			.tree__item__expander::before, .tree__item__expander::after {
+				content: "";
+				position: relative;
+				width: 2em;
+				outline: solid black thin;
+			}
+
+			.tree__item__expander::before {
+				
+			}
+
+			.tree__item__expander::after {
+				left: -1em;
+				transition: all 0.15s;
+				transform: rotate(90deg);
+			}
+
+			.tree-wrapper--inline {
+				margin-left: 1.5em;
+			}
 		</style>
 	</head>
 	<body>
@@ -323,8 +389,9 @@
 					</div>
 					<div class="tree__settings">
 						<button type="button" class="tree__option setting setting--list" data-value="list" data-default="true"></button>
+						<button type="button" class="tree__option setting setting--tree" data-value="tree"></button>
 						<button type="button" class="tree__option setting setting--grid" data-value="grid"></button>
-						<button type="button" class="tree__option setting setting--grid" data-value="tiny"></button>
+						<button type="button" class="tree__option setting setting--tiny" data-value="tiny"></button>
 
 					</div>
 				</div>
