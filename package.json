@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "setup": "yarn --dev && cd root/ && yarn --dev && cd ../editor/ && yarn --dev",
-    "build": "cd root/ && webpack && cd ../editor/ && webpack"
+    "setup": "npm i yarn && yarn --dev && cd explorer/ && yarn --dev && cd ../editor/ && yarn --dev",
+    "build": "cd explorer/ && webpack && cd ../editor/ && webpack"
   },
   "author": "",
   "license": "ISC",
