@@ -144,10 +144,12 @@ async function startTerminal (dir) {
 	const gotty = childProc.spawn(path.resolve("gotty"), [
 		// https://github.com/yudai/gotty#options
 		"--once",
-		`--address`,
+		"--address",
 		config.host,
-		`--port`,
+		"--port",
 		port,
+		"--ws-origin",
+		config.host_external,
 		"-w",
 		"--title-format",
 		`${dir} | ${BRAND_NAME}`,

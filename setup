@@ -3,8 +3,8 @@ wget https://github.com/yudai/gotty/releases/download/v2.0.0-alpha.3/gotty_2.0.0
 tar -xvf gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
 rm -fv gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
 npm i yarn &&
-yarn --dev &&
+yarn &&
 cd explorer/ &&
-yarn --dev &&
+yarn &&
 cd ../editor/ &&
-yarn --dev
+yarn
