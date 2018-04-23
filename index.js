@@ -141,7 +141,7 @@ async function startTerminal (dir) {
 
 	const tmuxOption = socketExists && await doesTmuxSocketHaveSession(socketAbsPath) ? "attach-session" : "new-session"
 
-	const gotty = childProc.spawn(path.resolve(process.cwd + "/gotty"), [
+	const gotty = childProc.spawn(path.resolve("gotty"), [
 		// https://github.com/yudai/gotty#options
 		"--once",
 		`--address`,
