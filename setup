@@ -1,0 +1,10 @@
+rm -vf gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
+wget https://github.com/yudai/gotty/releases/download/v2.0.0-alpha.3/gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
+tar -xvf gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
+rm -fv gotty_2.0.0-alpha.3_linux_amd64.tar.gz &&
+npm i yarn &&
+yarn --dev &&
+cd explorer/ &&
+yarn --dev &&
+cd ../editor/ &&
+yarn --dev
