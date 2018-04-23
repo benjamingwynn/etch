@@ -247,9 +247,14 @@ $shade.addEventListener("mousedown", (event) => {
 
 window.addEventListener("contextmenu", (event) => {
 	event.preventDefault()
-	
-	for (let i = 0; i < event.path.length; i += 1) {
-		const $tar = event.path[i]
+
+	console.log(event)
+
+	let $tar = event.target
+
+	while ($tar !== document.body) {
+		console.log($tar)
+
 		if ($tar.classList && $tar.classList.contains("tree__item")) {
 			$shade.removeAttribute("hidden")
 			console.log($menu, cursorX, cursorY)
@@ -262,6 +267,8 @@ window.addEventListener("contextmenu", (event) => {
 
 			break
 		}
+
+		$tar = $tar.parentNode
 	}
 })
 
