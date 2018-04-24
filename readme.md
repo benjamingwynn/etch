@@ -13,9 +13,8 @@ Etch is a Javascript-based IDE inspired by Cloud9 and other similar solutions. I
 ### Planned funtionality
 
 * Improve the file browser
-    * Add folder creation and file/folder deletion
+    * Add folder creation
     * Add drag/drop support for copying & moving files
-    * Add ability to disconnect clients from sockets before deleting them
 * "Changed on disk" notice in editor
 * Error handling
 * Soft/hard tab option in the editor
