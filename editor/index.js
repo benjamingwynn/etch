@@ -23,7 +23,6 @@ self.MonacoEnvironment = {
 	}
 }
 
-
 function getFileExtensionFromPath (path) {
 	const s = path.split(".")
 	return "." + s[s.length - 1]
@@ -96,7 +95,6 @@ async function loadEditor () {
 			throw ex
 		}
 	}
-
 	// Set up the language selector
 	const $select = document.querySelector("#lang")
 	const langs = monaco.languages.getLanguages()
@@ -136,6 +134,29 @@ async function loadEditor () {
 
 	window.addEventListener("resize", () => editor.layout())
 
+	let lastFocusText
+	window.addEventListener("focus", async () => {
+		const text = (await api("fs", "get", {
+			path: location.search.replace("?", "")
+		})).text
+
+		if (text === lastFocusText) {
+			console.log("Previous text matches")
+			return
+		}
+
+		lastFocusText = text
+
+		if (text === editor.getValue()) {
+			console.log("New text matches")
+		} else {
+			if (confirm("The file has changed on disk. Discard your changes and reload the file from the disk?")) {
+				editor.setValue(text)
+				save()
+			}
+		}
+	})
+
 	document.body.querySelector("#loading").setAttribute("hidden", "true")
 
 	editor.onDidChangeModelContent(() => {
@@ -148,7 +169,7 @@ async function loadEditor () {
 
 // Load the editor
 loadEditor()
-
+ 
 // Try and load the editor on login
 api.postLogin = function postLogin () {
 	loadEditor()
