@@ -55,16 +55,21 @@ document.head.querySelector("title").innerText = `${path} | ${BRAND_NAME}`
 function save () {
 	console.log("Attempting to save...")
 	progress(async () => {
-		const t = performance.now()
-		await api("fs", "put", {
-			path,
-			text: editor.getValue(),
-		})
-		setStatus(`File saved in ${Math.ceil(performance.now() - t)}ms`)
+		try {
+			const t = performance.now()
+			await api("fs", "put", {
+				path,
+				text: editor.getValue(),
+			})
+			setStatus(`File saved in ${Math.ceil(performance.now() - t)}ms`)
 
-		if (document.head.querySelector("title").innerText.includes(CHANGE_BULLET)) {
-			document.head.querySelector("title").innerText = document.head.querySelector("title").innerText.replace(CHANGE_BULLET, "")
-			window.onbeforeunload = null
+			if (document.head.querySelector("title").innerText.includes(CHANGE_BULLET)) {
+				document.head.querySelector("title").innerText = document.head.querySelector("title").innerText.replace(CHANGE_BULLET, "")
+				window.onbeforeunload = null
+			}
+		} catch (ex) {
+			alert("Failed to save the file. See the console for more information.")
+			throw ex
 		}
 	})
 }
