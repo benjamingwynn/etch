@@ -23,6 +23,16 @@ self.MonacoEnvironment = {
 	}
 }
 
+function getDirectoryFromPath (path) {
+	const s = path.split("/")
+	return s.filter((v, i) => i < s.length - 1).join("/") + "/"
+}
+
+function getFileNameFromPath (path) {
+	const s = path.split("/")
+	return s[s.length - 1]
+}
+
 function getFileExtensionFromPath (path) {
 	const s = path.split(".")
 	return "." + s[s.length - 1]
@@ -31,10 +41,11 @@ function getFileExtensionFromPath (path) {
 function setStatus (status) {
 	const $status = document.querySelector("#status-text")
 	$status.innerText = status
+	$status.setAttribute("title", status)
 	$status.classList.add("status-text--attention")
 	setTimeout(() => {
 		$status.classList.remove("status-text--attention")
-	}, 2000)
+	}, 3000)
 }
 
 function sleep (t) {
@@ -49,44 +60,59 @@ async function progress (callback) {
 	document.body.querySelector("#loading").setAttribute("hidden", "true")
 }
 
-const path = location.search.replace("?", "")
-document.head.querySelector("title").innerText = `${path} | ${BRAND_NAME}`
-
-function save () {
-	console.log("Attempting to save...")
-	progress(async () => {
-		try {
-			const t = performance.now()
-			await api("fs", "put", {
-				path,
-				text: editor.getValue(),
-			})
-			setStatus(`File saved in ${Math.ceil(performance.now() - t)}ms`)
-
-			if (document.head.querySelector("title").innerText.includes(CHANGE_BULLET)) {
-				document.head.querySelector("title").innerText = document.head.querySelector("title").innerText.replace(CHANGE_BULLET, "")
-				window.onbeforeunload = null
-			}
-		} catch (ex) {
-			alert("Failed to save the file. See the console for more information.")
-			throw ex
-		}
-	})
-}
-
-document.addEventListener("keydown", event => {
-	if (event.key === "s" && event.ctrlKey) {
-		save()
-		event.preventDefault()
-	}
-})
-
-document.querySelector("#action-save").addEventListener("click", save)
+//document.querySelector("#action-save").addEventListener("click", save)
 
 async function loadEditor () {
+	const path = location.search.replace("?", "")
 	const extension = getFileExtensionFromPath(path)
 
+	document.querySelector(".actions__button--open").href = "/#" + getDirectoryFromPath(path)
+
 	let text
+	let saveLock = false
+	function save () {
+		if (saveLock) return
+		saveLock = true
+		console.log("Attempting to save...")
+		progress(async () => {
+			try {
+				const t = performance.now()
+
+				text = editor.getValue()
+
+				await api("fs", "put", {
+					path,
+					text,
+				})
+
+				setStatus(`File saved in ${Math.ceil(performance.now() - t)}ms`)
+
+				if (document.head.querySelector("title").innerText.includes(CHANGE_BULLET)) {
+					document.head.querySelector("title").innerText = document.head.querySelector("title").innerText.replace(CHANGE_BULLET, "")
+					window.onbeforeunload = null
+				}
+
+				console.log("Saved!")
+				saveLock = false
+			} catch (ex) {
+				alert("Failed to save the file. See the console for more information.")
+				saveLock = false
+				throw ex
+			}
+		})
+	}
+
+	document.querySelector("#action-save").addEventListener("click", save)
+
+	//const path = location.search.replace("?", "")
+	document.head.querySelector("title").innerText = `${getFileNameFromPath(path)} (${path}) | ${BRAND_NAME}`
+
+	document.addEventListener("keydown", event => {
+		if (event.key === "s" && event.ctrlKey) {
+			save()
+			event.preventDefault()
+		}
+	})
 
 	try {
 		text = (await api("fs", "get", {
@@ -139,27 +165,22 @@ async function loadEditor () {
 
 	window.addEventListener("resize", () => editor.layout())
 
-	let lastFocusText
 	window.addEventListener("focus", async () => {
-		const text = (await api("fs", "get", {
+		const filesystemText = (await api("fs", "get", {
 			path: location.search.replace("?", "")
 		})).text
 
-		if (text === lastFocusText) {
-			console.log("Previous text matches")
+		if (filesystemText === text) {
+			console.log("FS matches last loaded contents")
 			return
 		}
 
-		lastFocusText = text
-
-		if (text === editor.getValue()) {
-			console.log("New text matches")
-		} else {
-			if (confirm("The file has changed on disk. Discard your changes and reload the file from the disk?")) {
-				editor.setValue(text)
-				save()
-			}
+		if (confirm("The file has changed on disk. Discard your changes and reload the file from the disk?")) {
+			editor.setValue(filesystemText)
 		}
+
+		// only show this message once
+		text = filesystemText
 	})
 
 	document.body.querySelector("#loading").setAttribute("hidden", "true")

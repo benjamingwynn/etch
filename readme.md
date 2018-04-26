@@ -17,7 +17,7 @@ Etch is a Javascript-based IDE inspired by Cloud9 and other similar solutions. I
     * Add drag/drop support for copying & moving files
 * Error handling
 * Soft/hard tab option in the editor
-* Ability to open the editor from the terminal
+* Ability to open the file browser from the terminal
 * User configuration for editor
 * Improve Typescript support with imported types
 * Use UNIX sockets instead of port numbers for Hapi and GoTTY
