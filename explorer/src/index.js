@@ -1,7 +1,7 @@
 import * as api from '../../api'
 import * as moment from "moment"
 
-const BRAND_NAME = "Yawde"
+const BRAND_NAME = "Etch"
 
 api.postLogin = () => {
 	refreshMain()
