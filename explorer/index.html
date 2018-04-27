@@ -39,7 +39,7 @@
 				bottom: 0;
 				left: 0;
 				right: 0;
-				box-shadow: 0 0 4em rgba(0,0,0,0.5), inset 0em 0.5em 1em -0.9em black;
+				box-shadow: 0 0 4em rgba(0,0,0,0.5), inset 0em 0.5em 1em -0.9em rgba(0,0,0,0.5);
 				background: white;
 				padding: 0em 0em 1em 1em;
 			}
@@ -443,6 +443,14 @@
 				display: inline-block;
 			}
 
+			.context-menu__item--here::before {
+				content: "";
+			}
+
+			.context-menu__item--popout::before {
+				content: "";
+			}
+
 			.context-menu__item--rename::before {
 				content: "";
 			}
@@ -457,11 +465,25 @@
 				pointer-events: none;
 				opacity: 0.1;
 			}
+
+			.context-menu__item--special {
+				display: none;
+			}
+
+			.context-menu[data-type="file"] .context-menu__item--here {
+				display: block;
+			}
+
+			.context-menu[data-type="dir"] .context-menu__item--popout {
+				display: block;
+			}
 		</style>
 	</head>
 	<body>
 		<div class="context-shade" hidden>
 			<div class="context-menu">
+				<button class="context-menu__item context-menu__item--special context-menu__item--here" type="button">Open in this window</button>
+				<button class="context-menu__item context-menu__item--special context-menu__item--popout" type="button">Open in a new window</button>
 				<button class="context-menu__item context-menu__item--rename" type="button">Rename</button>
 				<button class="context-menu__item context-menu__item--remove" type="button">Remove</button>
 			</div>

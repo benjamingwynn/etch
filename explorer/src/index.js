@@ -231,7 +231,7 @@ async function refreshMain (supressAnimation) {
 }
 
 // add context menu actions
-let cursorX, cursorY
+let cursorX, cursorY, $contextMenuTarget
 const $menu = document.querySelector(".context-menu")
 const $shade = document.querySelector(".context-shade")
 
@@ -260,16 +260,35 @@ window.addEventListener("contextmenu", (event) => {
 			console.log($menu, cursorX, cursorY)
 			$menu.style.top = cursorY + "px"
 			$menu.style.left = cursorX + "px"
+			$contextMenuTarget = $tar
 			$menu.dataset.path = $tar.dataset.path
 			$menu.dataset.type = $tar.dataset.type
 			$menu.dataset.friendly = $tar.querySelector(".tree__item__name").innerText
 			$tar.classList.add("context-focus")
+
+			const rect = $menu.getBoundingClientRect()
+
+			if (rect.right > window.innerWidth) {
+				$menu.style.left = (window.innerWidth - rect.width) + "px"
+			}
+
+			if (rect.bottom > window.innerHeight) {
+				$menu.style.top = (window.innerHeight - rect.height) + "px"
+			}
 
 			break
 		}
 
 		$tar = $tar.parentNode
 	}
+})
+document.querySelector(".context-menu__item--here").addEventListener("click", () => {
+	window.location = $contextMenuTarget.href
+})
+
+document.querySelector(".context-menu__item--popout").addEventListener("click", () => {
+	window.open("/#" + $menu.dataset.path)
+	hideContextShade()
 })
 
 document.querySelector(".context-menu__item--remove").addEventListener("click", async () => {
