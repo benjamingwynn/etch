@@ -10,7 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.14"
+    "webpack-cli": "^2.0.15"
   },
   "dependencies": {
     "moment": "^2.22.1"
