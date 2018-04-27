@@ -199,11 +199,11 @@ async function refreshMain (supressAnimation) {
 
 	// Fix location
 	// BUG: fixing location like this traps navigation
-	if (!location.hash) location.hash = "#/"
-	if (location.hash.lastIndexOf("/") !== location.hash.length - 1) location.hash += "/"
+	let path = location.hash
+	if (!path) path = "#/" // default
+	if (path.lastIndexOf("/") !== path.length - 1) path += "/" // add trailing slash
+	path = path.replace("#", "") // remove hash
 
-
-	const path = location.hash.replace("#", "")
 	const $tree = await generateTree(path)
 	$tree.classList.add("tree-wrapper--independant")
 
