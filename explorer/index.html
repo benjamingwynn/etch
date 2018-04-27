@@ -189,6 +189,7 @@
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				margin-left: 1em;
+				transition: all 0.15s;
 			}
 
 			.tree__dir::after {
@@ -444,7 +445,7 @@
 			}
 
 			.context-menu__item--here::before {
-				content: "";
+				content: "";
 			}
 
 			.context-menu__item--popout::before {
@@ -470,19 +471,24 @@
 				display: none;
 			}
 
-			.context-menu[data-type="file"] .context-menu__item--here {
+			.context-menu[data-type="file"] .context-menu__item--here,
+			body[data-view="tree"] .context-menu[data-type="dir"] .context-menu__item--here {
 				display: block;
 			}
 
 			.context-menu[data-type="dir"] .context-menu__item--popout {
 				display: block;
 			}
+
+			body[data-view="tree"] .tree__dir::after {
+				transform: rotate(90deg);
+			}
 		</style>
 	</head>
 	<body>
 		<div class="context-shade" hidden>
 			<div class="context-menu">
-				<button class="context-menu__item context-menu__item--special context-menu__item--here" type="button">Open in this window</button>
+				<button class="context-menu__item context-menu__item--special context-menu__item--here" type="button">Open here</button>
 				<button class="context-menu__item context-menu__item--special context-menu__item--popout" type="button">Open in a new window</button>
 				<button class="context-menu__item context-menu__item--rename" type="button">Rename</button>
 				<button class="context-menu__item context-menu__item--remove" type="button">Remove</button>

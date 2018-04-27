@@ -283,7 +283,12 @@ window.addEventListener("contextmenu", (event) => {
 	}
 })
 document.querySelector(".context-menu__item--here").addEventListener("click", () => {
-	window.location = $contextMenuTarget.href
+	hideContextShade()
+	if ($menu.dataset.type === "dir") {
+		location.hash = $menu.dataset.path
+	} else {
+		window.location = $contextMenuTarget.href
+	}
 })
 
 document.querySelector(".context-menu__item--popout").addEventListener("click", () => {
